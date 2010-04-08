@@ -1,6 +1,8 @@
 inoise
 ======
 
+![iPhone screenshot](http://github.com/koke/inoise/raw/master/screenshots/inoise.png)
+
 Experiments with audio generation on iPhone
 
 Now
