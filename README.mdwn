@@ -1,0 +1,21 @@
+inoise
+======
+
+Experiments with audio generation on iPhone
+
+Now
+---
+
+* Sine wave generation
+
+Wanted
+------
+
+* White/Brown/Pink noise
+* ???
+
+Credits
+=======
+
+Original source from:
+http://variogr.am/latest/?p=25
