@@ -19,6 +19,11 @@ typedef struct AQCallbackStruct {
 	AudioStreamBasicDescription		mDataFormat;
 } AQCallbackStruct;
 
+typedef enum {
+	NoiseGeneratorTypeSineWave = 0,
+	NoiseGeneratorTypeWhiteNoise,
+} NoiseGeneratorType;
+
 @interface NoiseGenerator : NSObject {
 	bool isPlaying;
 	float frequency;
@@ -26,11 +31,13 @@ typedef struct AQCallbackStruct {
 	IBOutlet UILabel *freqLabel;
 	IBOutlet UIButton *btnStart;
 	IBOutlet UIButton *btnStop;
+	IBOutlet UISegmentedControl *noiseSelector;
 	NSThread *bgThread;
 	AQCallbackStruct in;
 }
 - (IBAction)start;
 - (IBAction)stop;
 - (IBAction)sliderUpdated;
+- (IBAction)selectorChange;
 - (void)setupGenerator;
 @end

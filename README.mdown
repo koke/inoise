@@ -9,11 +9,12 @@ Now
 ---
 
 * Sine wave generation
+* White noise
 
 Wanted
 ------
 
-* White/Brown/Pink noise
+* Brown/Pink noise
 * ???
 
 Credits

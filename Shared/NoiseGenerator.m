@@ -14,7 +14,7 @@ int phaseR;
 float amp;
 float FL;
 float FR;
-
+NoiseGeneratorType noiseType;
 
 // Synthesis callback. Make your music here.
 static void AQBufferCallback(void *	in,	AudioQueueRef inQ, AudioQueueBufferRef	outQB) {
@@ -31,13 +31,18 @@ static void AQBufferCallback(void *	in,	AudioQueueRef inQ, AudioQueueBufferRef	o
 		outQB->mAudioDataByteSize = 4*inData->frameCount; // two shorts per frame, one frame per packet
 		// For each frame/packet (the same in our example)
 		for(i=0;i<inData->frameCount*2;i=i+2) {
-			// Render the sine waves - signed interleaved shorts (-32767 -> 32767), 16 bit stereo
-			float sampleL = (amp * sin(FL * (float)phaseL));
-			float sampleR = (amp * sin(FR * (float)phaseR));
-			short sampleIL = (int)(sampleL * 32767.0);
-			short sampleIR = (int)(sampleR * 32767.0);
-			coreAudioBuffer[i] =   sampleIL;
-			coreAudioBuffer[i+1] = sampleIR;
+			float fsample = (amp * sin(FL * (float)phaseL));
+			short sample;
+			switch (noiseType) {
+				case NoiseGeneratorTypeSineWave:
+					sample = (int)(fsample * 32767.0);
+					break;
+				case NoiseGeneratorTypeWhiteNoise:
+					sample = ((rand() % 65536) - 32767);
+					break;
+			}
+			coreAudioBuffer[i] = sample;
+			coreAudioBuffer[i+1] = sample;
 			phaseL++; phaseR++;
 		}
 		// "Enqueue" the buffer
@@ -75,6 +80,7 @@ static void AQBufferCallback(void *	in,	AudioQueueRef inQ, AudioQueueBufferRef	o
 	amp = 0.5;
 	FL = [self waveFor:440.0];
 	FR = [self waveFor:440.0];
+	noiseType = NoiseGeneratorTypeSineWave;
 	
 	// Set up our audio format -- signed interleaved shorts (-32767 -> 32767), 16 bit stereo
 	// The iphone does not want to play back float32s.
@@ -141,6 +147,23 @@ static void AQBufferCallback(void *	in,	AudioQueueRef inQ, AudioQueueBufferRef	o
 	frequency = [freqSlider value];
 	[freqLabel setText:[NSString stringWithFormat:@"%.1f Hz", frequency]];
 	FL = FR = [self waveFor:frequency];
+}
+
+- (IBAction)selectorChange {
+	switch ([noiseSelector selectedSegmentIndex]) {
+		case 0:
+			freqLabel.enabled = YES;
+			freqSlider.enabled = YES;
+			noiseType = NoiseGeneratorTypeSineWave;
+			break;
+		case 1:
+			freqLabel.enabled = NO;
+			freqSlider.enabled = NO;
+			noiseType = NoiseGeneratorTypeWhiteNoise;
+			break;
+		default:
+			break;
+	}
 }
 
 @end
